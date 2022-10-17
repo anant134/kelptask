@@ -1,0 +1,205 @@
+<div class="row">
+    <div class="card">
+        <p-tabView (onChange)="onChange($event)">
+            <p-tabPanel header="Search User" leftIcon="pi pi-search" tooltip="1972">
+                <p-divider align="center" type="dashed">
+                    <b>Search Git User</b>
+                </p-divider>
+                <p-card>
+                    <form [formGroup]="formtc" (ngSubmit)="onSubmit()">
+                        <div class="row mt-2 d-flex align-items-stretch">
+                            <div class="col-md-6 col-xl-6 col-xxl-6 col-sm-12">
+                                <div class="form-group">
+                                    <div class="p-field">
+                                        <label for="input" required class="mt-1">Search </label>
+                                        <input formControlName="search" id="search" placeholder="search" tabindex="0"
+                                            type="text" class="form-control" type="text" pInputText>
+                                        <div *ngIf="f.search?.touched && f.search.invalid">
+                                            <small *ngIf="f.search.errors?.['required']" class="p-error">Please enter
+                                                user
+                                                to search.</small>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-xl-6 col-xxl-6 col-sm-12" style="margin-top: 10px;">
+
+                                <button #smtbtn class="btn btn-primary mt-3 pull-right" type="submit"
+                                    [disabled]="((formtc.invalid) && !isProcessing)">Submit
+                                    <i [hidden]="!isProcessing" class="pi pi-spin pi-spinner"></i>
+                                </button> &nbsp;&nbsp;
+                                <span class="btn btn-primary mt-3 pull-right" (click)="clear()">clear</span>
+                            </div>
+                        </div>
+
+                    </form>
+                    <br>
+                    <p style="color: red;">{{message}}</p>
+                    <br>
+                    <div [hidden]="!showDtl">
+                        <p>
+                            <img width="100" height="100" [src]="searchResult?.avatar_url" [alt]="" />
+
+                        </p>
+                        <p><b>login</b> :{{searchResult?.login}}</p>
+                        <p><b>id</b> :{{searchResult?.id}}</p>
+                        <p><b>Public Repos</b>: {{searchResult?.public_repos}}</p>
+                        <p><b>Created At</b>: {{searchResult?.created_at | date: 'dd/MM/yyyy HH:mm'}}</p>
+
+                    </div>
+
+
+                </p-card>
+
+            </p-tabPanel>
+            <p-tabPanel header="Search History" leftIcon="pi pi-history" tooltip="history">
+                <p-divider align="center" type="dashed">
+                    <b>Search History</b>
+                </p-divider>
+                <div style="float: right;">
+                    <p-button label="Clear History" (onClick)="clearHistory($event)"></p-button>
+
+                </div>
+                <br>
+                <br>
+                <p-table [value]="searchhis" sortMode="multiple">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th pSortableColumn="quantity">Search Status<p-sortIcon field="category"></p-sortIcon>
+                            </th>
+                            <th>Search Key </th>
+                            <th>Search Result </th>
+                            <th>Search DateTime </th>
+                            <th>View </th>
+
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-search>
+                        <tr>
+                            <td>{{search.isSuccess?'successful':'unsuccessful'}}</td>
+                            <td>{{search.key}}</td>
+                            <td>
+                                <p><b>login :</b>{{search.info?.login}}</p>
+                                <p><b>id :</b>{{search.info?.id}}</p>
+                            </td>
+                            <td>{{search.searchOn}}</td>
+                            <td>
+                                <p> <span class="btn btn-primary mt-3 pull-right"
+                                        (click)="viewDetail(template,search.info)">view</span></p>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-tabPanel>
+
+        </p-tabView>
+    </div>
+</div>
+<ng-template #template>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">{{modelpopuptitle}}</h4><br>
+
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef?.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+
+
+            <div class="col-md-6"> <img width="100" height="100" [src]="viewinfo.avatar_url" [alt]="" />
+            </div>
+            <div class="col-md-6">
+                <p><b>ID</b> : {{viewinfo.id}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Bio</b> : {{viewinfo.bio}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Blog</b> : {{viewinfo.blog}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Company</b> : {{viewinfo.company}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Created At</b> : {{viewinfo.created_at}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Email</b> : {{viewinfo.email}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Events URL</b> : {{viewinfo.events_url}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Followers</b> : {{viewinfo.followers}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Following URL</b> : {{viewinfo.following_url}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>gists URL</b> : {{viewinfo.gists_url}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Gravatar Id</b> : {{viewinfo.gravatar_id}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Hireable</b> : {{viewinfo.hireable}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>HTML URL</b> : {{viewinfo.html_url}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Location</b> : {{viewinfo.location}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Login</b> : {{viewinfo.login}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Name</b> : {{viewinfo.name}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Node Id</b> : {{viewinfo.node_id}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Organizations URL</b> : {{viewinfo.organizations_url}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Public gists</b> : {{viewinfo.public_gists}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Public Repos</b> : {{viewinfo.public_repos}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Received Events URL</b> : {{viewinfo.received_events_url}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Repos URL</b> : {{viewinfo.repos_url}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Site Admin</b> : {{viewinfo.site_admin}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Starred URL</b> : {{viewinfo.starred_url}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Subscriptions URL</b> : {{viewinfo.subscriptions_url}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Twitter Username</b> : {{viewinfo.twitter_username}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Type</b> : {{viewinfo.type}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>Updated At</b> : {{viewinfo.updated_at}}</p>
+            </div>
+            <div class="col-md-6">
+                <p><b>URL</b> : {{viewinfo.url}}</p>
+            </div>
+        </div>
+
+
+    </div>
+</ng-template>
